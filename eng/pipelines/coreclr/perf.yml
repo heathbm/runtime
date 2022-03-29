@@ -32,8 +32,15 @@ schedules:
 
 jobs:
 
-- ${{ if and(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.DefinitionName'], 'perf-wasm')) }}:
-  - template: /eng/pipelines/coreclr/perf-wasm-jobs.yml
+#- ${{ if and(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.DefinitionName'], 'perf-wasm')) }}:
+- template: /eng/pipelines/coreclr/perf-wasm-jobs.yml
+  parameters:
+    - ${{ and(ne(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'Schedule')) }}:
+      runProfile: 'option#1'
+    - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'Schedule')) }}:
+      runProfile: 'option#2'
 
-- ${{ if not(and(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.DefinitionName'], 'perf-wasm'))) }}:
-  - template: /eng/pipelines/coreclr/perf-non-wasm-jobs.yml
+- template: /eng/pipelines/coreclr/perf-non-wasm-jobs.yml
+
+#- ${{ if not(and(eq(variables['Build.Reason'], 'PullRequest'), eq(variables['Build.DefinitionName'], 'perf-wasm'))) }}:
+  #- template: /eng/pipelines/coreclr/perf-non-wasm-jobs.yml

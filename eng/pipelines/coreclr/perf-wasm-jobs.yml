@@ -1,8 +1,12 @@
 # This contains all the wasm related perf jobs
+#
+
+parameters:
+  runProfile: 'option#1'
 
 jobs:
 
-- ${{ if and(ne(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'Schedule')) }}:
+- ${{ if eq(parameters.runProfile, 'option#1') }}:
   # build mono on wasm
   - template: /eng/pipelines/common/platform-matrix.yml
     parameters:
@@ -58,7 +62,7 @@ jobs:
         logicalmachine: 'perftiger'
         javascriptengine: 'javascriptcore'
 
-- ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'Schedule')) }}:
+- ${{ if eq(parameters.runProfile, 'option#2') }}:
   # build mono on wasm
   - template: /eng/pipelines/common/platform-matrix.yml
     parameters:

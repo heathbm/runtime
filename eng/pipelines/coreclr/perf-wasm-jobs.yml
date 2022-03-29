@@ -1,5 +1,7 @@
 # This contains all the wasm related perf jobs
 
+jobs:
+
 - ${{ if and(ne(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'Schedule')) }}:
   # build mono on wasm
   - template: /eng/pipelines/common/platform-matrix.yml

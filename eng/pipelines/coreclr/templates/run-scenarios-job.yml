@@ -107,9 +107,15 @@ jobs:
       displayName: Run ci setup script (Linux)
       condition: and(succeeded(), ne(variables['Agent.Os'], 'Windows_NT'))
     # copy wasm packs if running on wasm
-    - script: cp -r $(librariesDownloadDir)/BrowserWasm/staging/microsoft.netcore.app.runtime.browser-wasm $(PayloadDirectory) && cp -r $(librariesDownloadDir)/BrowserWasm/staging/microsoft.netcore.app.ref $(PayloadDirectory)
-      displayName: Copy browserwasm and runtime ref packs
+    - script: >-
+        mkdir -p $(librariesDownloadDir)/bin/wasm/data &&
+        cp -r $(librariesDownloadDir)/BrowserWasm/staging/dotnet-workload $(librariesDownloadDir)/bin/wasm &&
+        cp src/mono/wasm/test-main.js $(librariesDownloadDir)/bin/wasm/data/test-main.js &&
+        find $(librariesDownloadDir)/bin/wasm -type f -exec chmod 664 {} \;
+      displayName: "Create wasm directory (Linux)"
       condition: and(succeeded(), eq('${{ parameters.runtimeType }}', 'wasm'))
+    #- script: cp -r $(librariesDownloadDir)/BrowserWasm/staging/microsoft.netcore.app.runtime.browser-wasm $(PayloadDirectory) && cp -r $(librariesDownloadDir)/BrowserWasm/staging/microsoft.netcore.app.ref $(PayloadDirectory)
+      #displayName: Copy browserwasm and runtime ref packs
     # copy scenario support files
     - script: xcopy $(PerformanceDirectory)\scripts $(WorkItemDirectory)\scripts\/e && xcopy $(PerformanceDirectory)\src\scenarios\shared $(WorkItemDirectory)\shared\/e && xcopy $(PerformanceDirectory)\src\scenarios\staticdeps $(WorkItemDirectory)\staticdeps\/e
       displayName: Copy scenario support files (Windows)

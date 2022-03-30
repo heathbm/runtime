@@ -12,10 +12,10 @@ steps:
     inputs:
       buildType: specific
       project:  'public' # 'internal' or 'public'
-      pipeline: 'Antigen'
+      pipeline: 'perf-wasm'
       buildVersionToDownload: specific
-      branchName: 'refs/pull/59376/head'
-      buildId: '1387378'
+      branchName: 'refs/pull/67312/head'
+      buildId: '1691059'
       downloadType: single
       downloadPath: '$(Build.SourcesDirectory)/__download__'
       artifactName: '${{ parameters.artifactName }}'

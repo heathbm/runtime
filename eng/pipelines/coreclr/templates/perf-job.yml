@@ -140,7 +140,13 @@ jobs:
 
     # Download wasm
     - ${{ if eq(parameters.runtimeType, 'wasm') }}:
-      - template: /eng/pipelines/common/download-artifact-step.yml
+      #- template: /eng/pipelines/common/download-artifact-step.yml
+        #parameters:
+          #unpackFolder: $(librariesDownloadDir)/BrowserWasm
+          #artifactFileName: BrowserWasm.zip
+          #artifactName: BrowserWasm
+          #displayName: BrowserWasm
+      - template: /eng/pipelines/common/download-specific-artifact-step.yml
         parameters:
           unpackFolder: $(librariesDownloadDir)/BrowserWasm
           artifactFileName: BrowserWasm.zip

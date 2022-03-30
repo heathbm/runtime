@@ -39,6 +39,7 @@ jobs:
       displayName: '${{ parameters.displayName }}'
     ${{ if eq(parameters.displayName, '') }}:
       displayName: '${{ parameters.jobName }}'
+    name: ${{ replace(replace(parameters.jobName, ' ', '_'), '-', '_') }}
 
     timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
 
@@ -60,23 +61,41 @@ jobs:
       - SharedHelixPreCommands: 'call %HELIX_WORKITEM_PAYLOAD%\machine-setup.cmd;set PYTHONPATH=%HELIX_WORKITEM_PAYLOAD%\scripts%3B%HELIX_WORKITEM_PAYLOAD%'
     - ${{ if ne(parameters.osGroup, 'windows') }}:
       - SharedHelixPreCommands: 'chmod +x $HELIX_WORKITEM_PAYLOAD/machine-setup.sh;. $HELIX_WORKITEM_PAYLOAD/machine-setup.sh;export PYTHONPATH=$HELIX_WORKITEM_PAYLOAD/scripts:$HELIX_WORKITEM_PAYLOAD'
-    
+
+    - ${{ if eq(parameters.osGroup, 'windows') }}:
+      - HelixPreCommandStemWindows: 'set ORIGPYPATH=%PYTHONPATH%;py -3 -m venv %HELIX_WORKITEM_PAYLOAD%\.venv;call %HELIX_WORKITEM_PAYLOAD%\.venv\Scripts\activate.bat;set PYTHONPATH=;py -3 -m pip install -U pip;py -3 -m pip install --user azure.storage.blob==12.0.0 --force-reinstall;py -3 -m pip install --user azure.storage.queue==12.0.0 --force-reinstall;set "PERFLAB_UPLOAD_TOKEN=$(PerfCommandUploadToken)"'
+      - HelixPostCommandsWindows: 'set PYTHONPATH=%ORIGPYPATH%'
+    - ${{ if and(ne(parameters.osGroup, 'windows'), ne(parameters.osSubGroup, '_musl')) }}:
+      - HelixPreCommandStemLinux: 'export ORIGPYPATH=$PYTHONPATH;export CRYPTOGRAPHY_ALLOW_OPENSSL_102=true;sudo apt-get -y install python3-venv;python3 -m venv $HELIX_WORKITEM_PAYLOAD/.venv;source $HELIX_WORKITEM_PAYLOAD/.venv/bin/activate;export PYTHONPATH=;python3 -m pip install -U pip;pip3 install --user azure.storage.blob==12.0.0 --force-reinstall;pip3 install --user azure.storage.queue==12.0.0 --force-reinstall;export PERFLAB_UPLOAD_TOKEN="$(PerfCommandUploadTokenLinux)"'
+      - HelixPostCommandsLinux: 'export PYTHONPATH=$ORIGPYPATH'
+    - ${{ if and(ne(parameters.osGroup, 'windows'), eq(parameters.osSubGroup, '_musl')) }}:
+      - HelixPreCommandStemMusl: 'export ORIGPYPATH=$PYTHONPATH;sudo apk add py3-virtualenv;python3 -m venv $HELIX_WORKITEM_PAYLOAD/.venv;source $HELIX_WORKITEM_PAYLOAD/.venv/bin/activate;export PYTHONPATH=;python3 -m pip install -U pip;pip3 install --user azure.storage.blob==12.0.0 --force-reinstall;pip3 install --user azure.storage.queue==12.0.0 --force-reinstall;export PERFLAB_UPLOAD_TOKEN="$(PerfCommandUploadTokenLinux)"'
+      - HelixPostCommandsMusl: 'export PYTHONPATH=$ORIGPYPATH'
+
     # extra private job settings
     - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
       - ${{ if eq(parameters.osGroup, 'windows') }}:
-        - AdditionalHelixPreCommands: 'set ORIGPYPATH=%PYTHONPATH%;py -3 -m venv %HELIX_WORKITEM_PAYLOAD%\.venv;call %HELIX_WORKITEM_PAYLOAD%\.venv\Scripts\activate.bat;set PYTHONPATH=;py -3 -m pip install -U pip;py -3 -m pip install --user azure.storage.blob==12.0.0 --force-reinstall;py -3 -m pip install --user azure.storage.queue==12.0.0 --force-reinstall;set "PERFLAB_UPLOAD_TOKEN=$(PerfCommandUploadToken)"'
-        - AdditionalHelixPostCommands: 'set PYTHONPATH=%ORIGPYPATH%'
-        - IsInternal: -Internal      
+        - AdditionalHelixPreCommandStem: $(HelixPreCommandWindows)
+        - AdditionalHelixPostCommands: $(HelixPostCommandsWindows)
+        - IsInternal: -Internal
       - ${{ if and(ne(parameters.osGroup, 'windows'), ne(parameters.osSubGroup, '_musl')) }}:
-        - AdditionalHelixPreCommands: 'export ORIGPYPATH=$PYTHONPATH;export CRYPTOGRAPHY_ALLOW_OPENSSL_102=true;sudo apt-get -y install python3-venv;python3 -m venv $HELIX_WORKITEM_PAYLOAD/.venv;source $HELIX_WORKITEM_PAYLOAD/.venv/bin/activate;export PYTHONPATH=;python3 -m pip install -U pip;pip3 install --user azure.storage.blob==12.0.0 --force-reinstall;pip3 install --user azure.storage.queue==12.0.0 --force-reinstall;export PERFLAB_UPLOAD_TOKEN="$(PerfCommandUploadTokenLinux)"'
-        - AdditionalHelixPostCommands: 'export PYTHONPATH=$ORIGPYPATH'
+        - AdditionalHelixPreCommandStem: $(HelixPreCommandLinux)
+        - AdditionalHelixPostCommands: $(HelixPostCommandsLinux)
         - IsInternal: --internal
       - ${{ if and(ne(parameters.osGroup, 'windows'), eq(parameters.osSubGroup, '_musl')) }}:
-        - AdditionalHelixPreCommands: 'export ORIGPYPATH=$PYTHONPATH;sudo apk add py3-virtualenv;python3 -m venv $HELIX_WORKITEM_PAYLOAD/.venv;source $HELIX_WORKITEM_PAYLOAD/.venv/bin/activate;export PYTHONPATH=;python3 -m pip install -U pip;pip3 install --user azure.storage.blob==12.0.0 --force-reinstall;pip3 install --user azure.storage.queue==12.0.0 --force-reinstall;export PERFLAB_UPLOAD_TOKEN="$(PerfCommandUploadTokenLinux)"'
-        - AdditionalHelixPostCommands: 'export PYTHONPATH=$ORIGPYPATH'
+        - AdditionalHelixPreCommandStem: $(HelixPreCommandMusl)
+        - AdditionalHelixPostCommands: $(HelixPostCommandsMusl)
         - IsInternal: --internal
       - group: DotNet-HelixApi-Access
       - group: dotnet-benchview
+
+    - ${{ if not(and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest'))) }}:
+      - ${{ if eq(parameters.osGroup, 'windows') }}:
+        - AdditionalHelixPreCommandStem: $(HelixPreCommandWindows)
+        - AdditionalHelixPostCommands: $(HelixPostCommandsWindows)
+      - ${{ if ne(parameters.osGroup, 'windows') }}:
+        - AdditionalHelixPreCommandStem: $(HelixPreCommandLinux)
+        - AdditionalHelixPostCommands: $(HelixPostCommandsLinux)
 
     workspace:
       clean: all

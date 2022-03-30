@@ -84,10 +84,9 @@ jobs:
 
     - ${{ if not(and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest'))) }}:
       - ${{ if eq( parameters.osGroup, 'windows') }}:
-        - HelixPreCommand: $(ExtraMSBuildLogsWindows)
+        - HelixPreCommand: $(HelixPreCommandStemWindows);$(ExtraMSBuildLogsWindows)
       - ${{ if ne(parameters.osGroup, 'windows') }}:
-          - HelixPreCommand: $(ExtraMSBuildLogsLinux);npm install --prefix $HELIX_WORKITEM_PAYLOAD jsvu -g;$HELIX_WORKITEM_PAYLOAD/bin/jsvu --os=linux64 --engines=v8,javascriptcore
-
+        - HelixPreCommand: $(HelixPreCommandStemLinux);$(ExtraMSBuildLogsLinux);npm install --prefix $HELIX_WORKITEM_PAYLOAD jsvu -g;$HELIX_WORKITEM_PAYLOAD/bin/jsvu --os=linux64 --engines=v8,javascriptcore
 
     - ${{ if and(eq(parameters.codeGenType, 'Interpreter'), eq(parameters.runtimeType, 'mono')) }}:
       - ${{ if eq( parameters.osGroup, 'windows') }}:

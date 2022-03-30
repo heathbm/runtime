@@ -3,6 +3,8 @@
 
 parameters:
   runProfile: 'option#1'
+  compare: false
+  onlySanityCheck: false
 
 jobs:
 
@@ -98,6 +100,8 @@ jobs:
         runJobTemplate: /eng/pipelines/coreclr/templates/run-performance-job.yml
         logicalmachine: 'perftiger'
         javascriptEngine: 'v8'
+        compare: ${{ parameters.compare }}
+        only_sanity: ${{ parameters.only_sanity }}
 
   #run mono wasm aot microbenchmarks perf job
   - template: /eng/pipelines/common/platform-matrix.yml
@@ -118,6 +122,8 @@ jobs:
         runjobtemplate: /eng/pipelines/coreclr/templates/run-performance-job.yml
         logicalmachine: 'perftiger'
         javascriptEngine: 'v8'
+        compare: ${{ parameters.compare }}
+        only_sanity: ${{ parameters.only_sanity }}
 
   # run mono wasm blazor perf job
   - template: /eng/pipelines/common/platform-matrix.yml
@@ -137,4 +143,3 @@ jobs:
         runJobTemplate: /eng/pipelines/coreclr/templates/run-scenarios-job.yml
         additionalSetupParameters: '--latestdotnet'
         logicalmachine: 'perftiger'
-

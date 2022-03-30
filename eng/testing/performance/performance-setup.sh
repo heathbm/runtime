@@ -30,6 +30,7 @@ using_wasm=false
 use_latest_dotnet=false
 logical_machine=
 javascript_engine="v8"
+only_sanity=false
 
 while (($# > 0)); do
   lowerI="$(echo $1 | tr "[:upper:]" "[:lower:]")"
@@ -138,6 +139,10 @@ while (($# > 0)); do
       ;;
     --latestdotnet)
       use_latest_dotnet=true
+      shift 1
+      ;;
+    --only-sanity)
+      only_sanity=true
       shift 1
       ;;
     *)
@@ -337,3 +342,4 @@ Write-PipelineSetVariable -name "_BuildConfig" -value "$architecture.$kind.$fram
 Write-PipelineSetVariable -name "Compare" -value "$compare" -is_multi_job_variable false
 Write-PipelineSetVariable -name "MonoDotnet" -value "$using_mono" -is_multi_job_variable false
 Write-PipelineSetVariable -name "WasmDotnet" -value "$using_wasm" -is_multi_job_variable false
+Write-PipelineSetVariable -name "OnlySanityCheck" -value "$only_sanity" -is_multi_job_variable false

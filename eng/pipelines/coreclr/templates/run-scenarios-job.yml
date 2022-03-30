@@ -54,6 +54,7 @@ jobs:
     - HelixApiAccessToken: ''
     - SharedHelixPreCommands: ''
     - AdditionalHelixPreCommands: ''
+    - AdditionalHelixPostCommands: ''
     # run machine-setup and set PYTHONPATH for both public and private jobs
     - ${{ if eq(parameters.osGroup, 'windows') }}:
       - SharedHelixPreCommands: 'call %HELIX_WORKITEM_PAYLOAD%\machine-setup.cmd;set PYTHONPATH=%HELIX_WORKITEM_PAYLOAD%\scripts%3B%HELIX_WORKITEM_PAYLOAD%'

@@ -75,15 +75,15 @@ jobs:
     # extra private job settings
     - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
       - ${{ if eq(parameters.osGroup, 'windows') }}:
-        - AdditionalHelixPreCommandStem: $(HelixPreCommandWindows)
+        - AdditionalHelixPreCommands: $(HelixPreCommandWindows)
         - AdditionalHelixPostCommands: $(HelixPostCommandsWindows)
         - IsInternal: -Internal
       - ${{ if and(ne(parameters.osGroup, 'windows'), ne(parameters.osSubGroup, '_musl')) }}:
-        - AdditionalHelixPreCommandStem: $(HelixPreCommandLinux)
+        - AdditionalHelixPreCommands: $(HelixPreCommandLinux)
         - AdditionalHelixPostCommands: $(HelixPostCommandsLinux)
         - IsInternal: --internal
       - ${{ if and(ne(parameters.osGroup, 'windows'), eq(parameters.osSubGroup, '_musl')) }}:
-        - AdditionalHelixPreCommandStem: $(HelixPreCommandMusl)
+        - AdditionalHelixPreCommands: $(HelixPreCommandMusl)
         - AdditionalHelixPostCommands: $(HelixPostCommandsMusl)
         - IsInternal: --internal
       - group: DotNet-HelixApi-Access
@@ -91,10 +91,10 @@ jobs:
 
     - ${{ if not(and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest'))) }}:
       - ${{ if eq(parameters.osGroup, 'windows') }}:
-        - AdditionalHelixPreCommandStem: $(HelixPreCommandWindows)
+        - AdditionalHelixPreCommands: $(HelixPreCommandWindows)
         - AdditionalHelixPostCommands: $(HelixPostCommandsWindows)
       - ${{ if ne(parameters.osGroup, 'windows') }}:
-        - AdditionalHelixPreCommandStem: $(HelixPreCommandLinux)
+        - AdditionalHelixPreCommands: $(HelixPreCommandLinux)
         - AdditionalHelixPostCommands: $(HelixPostCommandsLinux)
 
     workspace:

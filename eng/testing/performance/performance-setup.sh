@@ -241,11 +241,15 @@ if [[ -n "$mono_dotnet" && "$monointerpreter" == "false" ]]; then
     extra_benchmark_dotnet_arguments="$extra_benchmark_dotnet_arguments --category-exclusion-filter NoMono"
 fi
 
+_BuildConfig="$architecture.$kind.$framework"
+
 if [[ -n "$wasm_runtime_loc" ]]; then
     if [[ "$wasmaot" == "true" ]]; then
         configurations="CompilationMode=wasm AOT=true RunKind=$kind"
+        _BuildConfig="wasmaot.$_BuildConfig"
     else
         configurations="CompilationMode=wasm RunKind=$kind"
+        _BuildConfig="wasm.$_BuildConfig"
     fi
     if [[ "$javascript_engine" == "javascriptcore" ]]; then
       configurations="$configurations JSEngine=javascriptcore"
@@ -342,7 +346,7 @@ Write-PipelineSetVariable -name "RunFromPerfRepo" -value "$run_from_perf_repo" -
 Write-PipelineSetVariable -name "Creator" -value "$creator" -is_multi_job_variable false
 Write-PipelineSetVariable -name "HelixSourcePrefix" -value "$helix_source_prefix" -is_multi_job_variable false
 Write-PipelineSetVariable -name "Kind" -value "$kind" -is_multi_job_variable false
-Write-PipelineSetVariable -name "_BuildConfig" -value "$architecture.$kind.$framework" -is_multi_job_variable false
+Write-PipelineSetVariable -name "_BuildConfig" -value "$_BuildConfig" -is_multi_job_variable false
 Write-PipelineSetVariable -name "Compare" -value "$compare" -is_multi_job_variable false
 Write-PipelineSetVariable -name "MonoDotnet" -value "$using_mono" -is_multi_job_variable false
 Write-PipelineSetVariable -name "WasmDotnet" -value "$using_wasm" -is_multi_job_variable false

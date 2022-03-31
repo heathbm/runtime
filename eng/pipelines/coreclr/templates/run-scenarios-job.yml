@@ -154,7 +154,7 @@ jobs:
       env:
         PERFLAB_TARGET_FRAMEWORKS: net6.0
       condition: and(succeeded(), eq(variables['Agent.Os'], 'Windows_NT'))
-    - script: $(PayloadDirectory)/dotnet/dotnet publish -c Release -o $(WorkItemDirectory)/startup -f net6.0 -r linux-$(Architecture) $(PerformanceDirectory)/src/tools/ScenarioMeasurement/Startup/Startup.csproj
+    - script: $(dotnetPath)/dotnet publish -c Release -o $(WorkItemDirectory)/startup -f net6.0 -r linux-$(Architecture) $(PerformanceDirectory)/src/tools/ScenarioMeasurement/Startup/Startup.csproj
       displayName: Build Startup tool (Linux)
       env:
         PERFLAB_TARGET_FRAMEWORKS: net6.0
@@ -165,7 +165,7 @@ jobs:
       env:
         PERFLAB_TARGET_FRAMEWORKS: net6.0
       condition: and(succeeded(), eq(variables['Agent.Os'], 'Windows_NT'))
-    - script: $(PayloadDirectory)/dotnet/dotnet publish -c Release -o $(WorkItemDirectory)/SOD -f net6.0 -r linux-$(Architecture) $(PerformanceDirectory)/src/tools/ScenarioMeasurement/SizeOnDisk/SizeOnDisk.csproj
+    - script: $(dotnetPath)/dotnet publish -c Release -o $(WorkItemDirectory)/SOD -f net6.0 -r linux-$(Architecture) $(PerformanceDirectory)/src/tools/ScenarioMeasurement/SizeOnDisk/SizeOnDisk.csproj
       displayName: Build SizeOnDisk tool (Linux)
       env:
         PERFLAB_TARGET_FRAMEWORKS: net6.0

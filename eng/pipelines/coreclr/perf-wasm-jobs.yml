@@ -104,7 +104,7 @@ jobs:
         javascriptEngine: 'v8'
         collectHelixLogsScript: ${{ variables['_wasmCollectHelixLogsScript'] }}
         compare: ${{ parameters.compare }}
-        only_sanity: ${{ parameters.only_sanity }}
+        onlySanityCheck: ${{ parameters.onlySanityCheck }}
 
   #run mono wasm aot microbenchmarks perf job
   - template: /eng/pipelines/common/platform-matrix.yml
@@ -127,7 +127,7 @@ jobs:
         javascriptEngine: 'v8'
         collectHelixLogsScript: ${{ variables['_wasmCollectHelixLogsScript'] }}
         compare: ${{ parameters.compare }}
-        only_sanity: ${{ parameters.only_sanity }}
+        onlySanityCheck: ${{ parameters.onlySanityCheck }}
 
   # run mono wasm blazor perf job
   - template: /eng/pipelines/common/platform-matrix.yml

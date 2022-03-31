@@ -161,5 +161,5 @@ jobs:
         projectFile: blazor_perf.proj
         runKind: blazor_scenarios
         runJobTemplate: /eng/pipelines/coreclr/templates/run-scenarios-job.yml
-        additionalSetupParameters: '--latestdotnet'
+        #additionalSetupParameters: '--latestdotnet' - doesn't do anything, IIUC. see performance-setup.sh
         logicalmachine: 'perftiger'

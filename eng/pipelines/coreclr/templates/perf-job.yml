@@ -90,7 +90,7 @@ jobs:
       ${{ if and(eq(parameters.runtimeType, 'wasm'), ne(parameters.codeGenType, 'AOT')) }}:
         extraSetupParameters: --architecture ${{ parameters.archType }} --wasm $(librariesDownloadDir)/bin/wasm --javascriptengine ${{ parameters.javascriptEngine }} $(extraSetupParametersSuffix)
       ${{ if and(eq(parameters.runtimeType, 'wasm'), eq(parameters.codeGenType, 'AOT')) }}:
-        extraSetupParameters: --architecture ${{ parameters.archType }} --wasm $(librariesDownloadDir)/bin/wasm --wasmaot --javascriptengine ${{ parameters.javascriptEngine }} $(variables.extraSetupParametersSuffix)
+        extraSetupParameters: --architecture ${{ parameters.archType }} --wasm $(librariesDownloadDir)/bin/wasm --wasmaot --javascriptengine ${{ parameters.javascriptEngine }} $(extraSetupParametersSuffix)
       ${{ if and(eq(parameters.codeGenType, 'AOT'), ne(parameters.runtimeType, 'wasm')) }}:
         extraSetupParameters: --architecture ${{ parameters.archType }} --monoaot $(librariesDownloadDir)/bin/aot
       ${{ if and(eq(parameters.runtimeType, 'coreclr'), ne(parameters.osSubGroup, '_musl')) }}:
@@ -102,13 +102,14 @@ jobs:
     ${{ if eq(parameters.runtimeType, 'iosMono') }}:
       extraSetupParameters: -Architecture ${{ parameters.archType }} -iOSMono -iOSLlvmBuild:$${{ parameters.iOSLlvmBuild }}
 
-    variables: ${{ parameters.variables }}
-
-    ${{ if eq(parameters.compare, 'true') }}:
-      - name: extraSetupParametersSuffix
+    variables:
+    - ${{ each variable in parameters.variables }}:
+      - name: ${{ variable.name }}
+        value: ${{ variable.value }}
+    - name: extraSetupParametersSuffix
+      ${{ if eq(parameters.compare, 'true') }}:
         value: '--compare'
-    ${{ if eq(parameters.onlySanityCheck, 'true') }}:
-      - name: extraSetupParametersSuffix
+      ${{ if eq(parameters.onlySanityCheck, 'true') }}:
         value: '--only-sanity'
 
     frameworks:

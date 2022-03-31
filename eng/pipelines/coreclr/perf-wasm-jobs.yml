@@ -68,20 +68,20 @@ jobs:
 
 - ${{ if eq(parameters.runProfile, 'option#2') }}:
   # build mono on wasm
-  #- template: /eng/pipelines/common/platform-matrix.yml
-    #parameters:
-      #jobTemplate: /eng/pipelines/common/global-build-job.yml
-      #buildConfig: Release
-      #runtimeFlavor: mono
-      #platforms:
-      #- Browser_wasm
-      #jobParameters:
-        #buildArgs: -s mono+libs+host+packs -c $(_BuildConfig)
-        #nameSuffix: wasm
-        #isOfficialBuild: false
-        #extraStepsTemplate: /eng/pipelines/coreclr/perf-wasm-prepare-artifacts-steps.yml
-        #extraStepsParameters:
-          #configForBuild: Release
+  - template: /eng/pipelines/common/platform-matrix.yml
+    parameters:
+      jobTemplate: /eng/pipelines/common/global-build-job.yml
+      buildConfig: Release
+      runtimeFlavor: mono
+      platforms:
+      - Browser_wasm
+      jobParameters:
+        buildArgs: -s mono+libs+host+packs -c $(_BuildConfig)
+        nameSuffix: wasm
+        isOfficialBuild: false
+        extraStepsTemplate: /eng/pipelines/coreclr/perf-wasm-prepare-artifacts-steps.yml
+        extraStepsParameters:
+          configForBuild: Release
 
   # run mono wasm interpreter (default) microbenchmarks perf job
   - template: /eng/pipelines/common/platform-matrix.yml

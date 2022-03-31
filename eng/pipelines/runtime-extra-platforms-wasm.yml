@@ -121,4 +121,5 @@ jobs:
   - template: /eng/pipelines/coreclr/perf-wasm-jobs.yml
     parameters:
       runProfile: 'option#2'
-      onlySanityCheck: true
+      # FIXME: just for testing, .. for final, it will be inverted
+      onlySanityCheck: ${{ parameters.isWasmOnlyBuild }}

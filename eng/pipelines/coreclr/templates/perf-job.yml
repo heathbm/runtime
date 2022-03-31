@@ -24,13 +24,6 @@ parameters:
   compare: false
   onlySanityCheck: false
 
-variables:
-  - name: extraSetupParametersSuffix
-    ${{ if eq(parameters.compare, 'true') }}:
-      value: '--compare'
-    ${{ if eq(parameters.onlySanityCheck, 'true') }}:
-      value: '--only-sanity'
-
 ### Perf job
 
 ### Each perf job depends on a corresponding build job with the same
@@ -110,6 +103,11 @@ jobs:
       extraSetupParameters: -Architecture ${{ parameters.archType }} -iOSMono -iOSLlvmBuild:$${{ parameters.iOSLlvmBuild }}
 
     variables: ${{ parameters.variables }}
+      - name: extraSetupParametersSuffix
+        ${{ if eq(parameters.compare, 'true') }}:
+          value: '--compare'
+        ${{ if eq(parameters.onlySanityCheck, 'true') }}:
+          value: '--only-sanity'
 
     frameworks:
       - ${{ parameters.framework }}

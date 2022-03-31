@@ -122,4 +122,4 @@ jobs:
     parameters:
       runProfile: 'option#2'
       # FIXME: just for testing, .. for final, it will be inverted
-      onlySanityCheck: ${{ parameters.isWasmOnlyBuild }}
+      onlySanityCheck: true

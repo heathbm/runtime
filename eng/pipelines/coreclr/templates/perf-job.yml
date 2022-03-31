@@ -103,11 +103,11 @@ jobs:
       extraSetupParameters: -Architecture ${{ parameters.archType }} -iOSMono -iOSLlvmBuild:$${{ parameters.iOSLlvmBuild }}
 
     variables: ${{ parameters.variables }}
-      - name: extraSetupParametersSuffix
-        ${{ if eq(parameters.compare, 'true') }}:
-          value: '--compare'
-        ${{ if eq(parameters.onlySanityCheck, 'true') }}:
-          value: '--only-sanity'
+    - name: extraSetupParametersSuffix
+      - ${{ if eq(parameters.compare, 'true') }}:
+        value: '--compare'
+      - ${{ if eq(parameters.onlySanityCheck, 'true') }}:
+        value: '--only-sanity'
 
     frameworks:
       - ${{ parameters.framework }}

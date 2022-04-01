@@ -34,4 +34,4 @@ variables:
   ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
     value: Debug
 
-- template: /eng/pipelines/common/perf-variables.yml
+#- template: /eng/pipelines/common/perf-variables.yml

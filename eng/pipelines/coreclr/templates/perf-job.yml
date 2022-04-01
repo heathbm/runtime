@@ -149,10 +149,8 @@ jobs:
           artifactName: 'MonoProduct__${{ parameters.runtimeVariant }}_$(osGroup)_$(archType)_$(buildConfig)'
           displayName: 'Mono runtime'
 
-
     # Download wasm
     - ${{ if eq(parameters.runtimeType, 'wasm') }}:
-      #- ${{ if not(parameters.downloadSpecificBuild) }}:
       - ${{ if eq(parameters.downloadSpecificBuild.buildId, '') }}:
         - template: /eng/pipelines/common/download-artifact-step.yml
           parameters:
@@ -160,8 +158,6 @@ jobs:
             artifactFileName: BrowserWasm.zip
             artifactName: BrowserWasm
             displayName: BrowserWasm
-      #- ${{ if parameters.downloadSpecificBuild }}:
-      #- ${{ if ne(length(parameters.downloadSpecificBuild), 0) }}:
       - ${{ if ne(parameters.downloadSpecificBuild.buildId, '') }}:
         - template: /eng/pipelines/common/download-specific-artifact-step.yml
           parameters:
@@ -170,15 +166,6 @@ jobs:
             artifactName: BrowserWasm
             displayName: BrowserWasm
             ${{ insert }}: ${{ parameters.downloadSpecificBuild }}
-            #buildId: '1693181'
-            #pipeline: 'perf-wasm'
-            #branchName: 'refs/pull/67312/head'
-            #${{ each param in parameters.downloadSpecificBuild }}:
-              #${{ param.name }}: ${{ param.value }}
-            #buildId: ${{ parameters.downloadSpecificBuild.buildId }}
-            #branchName: ${{ parameters.downloadSpecificBuild.branchName }}
-            #pipeline: ${{ parameters.downloadSpecificBuild.pipeline }}
-            #project: ${{ parameters.downloadSpecificBuild.project }}
 
       - script: >-
           mkdir -p $(librariesDownloadDir)/bin/wasm/data &&

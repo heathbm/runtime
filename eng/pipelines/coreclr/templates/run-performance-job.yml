@@ -25,8 +25,6 @@ parameters:
   javascriptEngine: 'NoJS'
   helixTypeSuffix: ''             # optional -- appends to HelixType
   collectHelixLogsScript: ''      # optional -- script to collect the logs, and artifacts helpful for debugging failures
-  compare: false
-  onlySanityCheck: false
 
 jobs:
 - template: xplat-pipeline-job.yml

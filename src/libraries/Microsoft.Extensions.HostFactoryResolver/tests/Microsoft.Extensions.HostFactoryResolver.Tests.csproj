@@ -5,6 +5,7 @@
 
   <ItemGroup>
     <Compile Include="..\src\HostFactoryResolver.cs" />
+    <Compile Include="..\src\HostAbortedException.cs" />
     <Compile Include="HostFactoryResolverTests.cs" />
   </ItemGroup>
 

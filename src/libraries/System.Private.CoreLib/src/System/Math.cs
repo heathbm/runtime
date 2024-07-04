@@ -505,7 +505,7 @@ namespace System
         /// <summary>Produces the quotient and the remainder of two signed 32-bit numbers.</summary>
         /// <param name="left">The dividend.</param>
         /// <param name="right">The divisor.</param>
-        /// <param name="rounding"></param>
+        /// <param name="rounding">The rounding type.</param>
         /// <returns>The quotient and the remainder of the specified numbers.</returns>
         [NonVersionable]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -521,6 +521,8 @@ namespace System
 
             switch (rounding)
             {
+                case DivisionRounding.Truncate:
+                    break;
                 case DivisionRounding.Floor:
                     if (left < 0)
                     {
@@ -529,7 +531,6 @@ namespace System
                     }
                     break;
                 case DivisionRounding.Ceiling:
-
                     if (left > 0)
                     {
                         quotient += 1;

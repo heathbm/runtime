@@ -43,6 +43,8 @@ namespace System.Numerics
 
             switch (rounding)
             {
+                case DivisionRounding.Truncate:
+                    break;
                 case DivisionRounding.Floor:
                     if (left < TSelf.Zero)
                     {
@@ -51,7 +53,6 @@ namespace System.Numerics
                     }
                     break;
                 case DivisionRounding.Ceiling:
-
                     if (left > TSelf.Zero)
                     {
                         quotient += TSelf.One;

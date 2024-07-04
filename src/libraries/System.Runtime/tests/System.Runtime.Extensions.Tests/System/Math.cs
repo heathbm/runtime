@@ -1940,6 +1940,40 @@ namespace System.Tests
         }
 
         [Theory]
+        [InlineData(2147483647, 2000, 1073741, 1647)]
+        [InlineData(13952, 2000, 6, 1952)]
+        [InlineData(0, 2000, 0, 0)]
+        [InlineData(-14032, 2000, -7, -32)]
+        [InlineData(-2147483648, 2000, -1073741, -1648)]
+        [InlineData(2147483647, -2000, -1073741, 1647)]
+        [InlineData(13952, -2000, -6, 1952)]
+        [InlineData(13952, 0, 0, 0)]
+        [InlineData(int.MaxValue, 0, 0, 0)]
+        [InlineData(0, 0, 0, 0)]
+        public static void DivRemWithDivisionRoundingInt32(int dividend, int divisor, int expectedQuotient, int expectedRemainder)
+        {
+            if (divisor == 0)
+            {
+                Assert.Throws<DivideByZeroException>(() => Math.DivRem(dividend, divisor, Globalization.DivisionRounding.Truncate));
+                Assert.Throws<DivideByZeroException>(() => Math.DivRem(dividend, divisor, Globalization.DivisionRounding.Truncate));
+            }
+            else
+            {
+                (int Quotient, int Remainder) value = Math.DivRem(dividend, divisor, Globalization.DivisionRounding.Truncate);
+                Assert.Equal(expectedQuotient, value.Quotient);
+                Assert.Equal(expectedRemainder, value.Remainder);
+
+                var (actualQuotient, actualRemainder) = Math.DivRem(dividend, divisor, Globalization.DivisionRounding.Truncate);
+                Assert.Equal(expectedQuotient, actualQuotient);
+                Assert.Equal(expectedRemainder, actualRemainder);
+            }
+            if (IntPtr.Size == 4)
+            {
+                DivRemNativeInt(dividend, divisor, expectedQuotient, expectedRemainder);
+            }
+        }
+
+        [Theory]
         [InlineData(uint.MaxValue, uint.MaxValue, 1, 0)]
         [InlineData(uint.MaxValue, 1, uint.MaxValue, 0)]
         [InlineData(uint.MaxValue, 2, 2147483647, 1)]

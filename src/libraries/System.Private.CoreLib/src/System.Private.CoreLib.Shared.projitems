@@ -366,6 +366,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\DateTimeStyles.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\DaylightTime.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\DigitShapes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\DivisionRounding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\EastAsianLunisolarCalendar.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\GlobalizationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\GlobalizationMode.cs" />

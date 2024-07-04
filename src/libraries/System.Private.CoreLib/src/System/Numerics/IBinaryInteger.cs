@@ -1,6 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Globalization;
+
 namespace System.Numerics
 {
     /// <summary>Defines an integer type that is represented in a base-2 format.</summary>
@@ -18,6 +20,68 @@ namespace System.Numerics
         {
             TSelf quotient = left / right;
             return (quotient, (left - (quotient * right)));
+        }
+
+        /// <summary>
+        /// Computes the quotient and remainder of two values.
+        /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="rounding"/> is invalid.
+        /// </summary>
+        /// <param name="left">The value which <paramref name="right" /> divides.</param>
+        /// <param name="right">The value which divides <paramref name="left" />.</param>
+        /// <param name="rounding"></param>
+        /// <returns>The quotient and remainder of <paramref name="left" /> divided-by <paramref name="right" />.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        static virtual (TSelf Quotient, TSelf Remainder) DivRem(TSelf left, TSelf right, DivisionRounding rounding)
+        {
+            TSelf quotient = left / right;
+            TSelf remainder = left - (quotient * right);
+
+            if (remainder == TSelf.Zero)
+            {
+                return (quotient, remainder);
+            }
+
+            switch (rounding)
+            {
+                case DivisionRounding.Floor:
+                    if (left < TSelf.Zero)
+                    {
+                        quotient -= TSelf.One;
+                        remainder += right;
+                    }
+                    break;
+                case DivisionRounding.Ceiling:
+
+                    if (left > TSelf.Zero)
+                    {
+                        quotient += TSelf.One;
+                        remainder -= right;
+                    }
+                    break;
+                case DivisionRounding.AwayFromZero:
+                    if (left > TSelf.Zero)
+                    {
+                        quotient += TSelf.One;
+                        remainder -= right;
+                    }
+                    else
+                    {
+                        quotient -= TSelf.One;
+                        remainder += right;
+                    }
+                    break;
+                case DivisionRounding.Euclidean:
+                    if (remainder < TSelf.Zero)
+                    {
+                        quotient += right > TSelf.Zero ? -TSelf.One : TSelf.One;
+                        remainder += right;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rounding));
+            }
+
+            return (quotient, remainder);
         }
 
         /// <summary>Computes the number of leading zero bits in a value.</summary>

@@ -7,6 +7,7 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
@@ -499,6 +500,66 @@ namespace System
         {
             nuint quotient = left / right;
             return (quotient, left - (quotient * right));
+        }
+
+        /// <summary>Produces the quotient and the remainder of two signed 32-bit numbers.</summary>
+        /// <param name="left">The dividend.</param>
+        /// <param name="right">The divisor.</param>
+        /// <param name="rounding"></param>
+        /// <returns>The quotient and the remainder of the specified numbers.</returns>
+        [NonVersionable]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static (int Quotient, int Remainder) DivRem(int left, int right, DivisionRounding rounding)
+        {
+            int quotient = left / right;
+            int remainder = left - (quotient * right);
+
+            if (remainder == 0)
+            {
+                return (quotient, remainder);
+            }
+
+            switch (rounding)
+            {
+                case DivisionRounding.Floor:
+                    if (left < 0)
+                    {
+                        quotient -= 1;
+                        remainder += right;
+                    }
+                    break;
+                case DivisionRounding.Ceiling:
+
+                    if (left > 0)
+                    {
+                        quotient += 1;
+                        remainder -= right;
+                    }
+                    break;
+                case DivisionRounding.AwayFromZero:
+                    if (left > 0)
+                    {
+                        quotient += 1;
+                        remainder -= right;
+                    }
+                    else
+                    {
+                        quotient -= 1;
+                        remainder += right;
+                    }
+                    break;
+                case DivisionRounding.Euclidean:
+                    if (remainder < 0)
+                    {
+                        quotient += right > 0 ? -1 : 1;
+                        remainder += right;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rounding));
+            }
+
+            return (quotient, remainder);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

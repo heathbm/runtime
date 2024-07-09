@@ -307,6 +307,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\Diagnostics\Stopwatch.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Diagnostics\SymbolStore\ISymbolDocumentWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Diagnostics\UnreachableException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)System\DivisionRounding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\DivideByZeroException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\DllNotFoundException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Double.cs" />
@@ -366,7 +367,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\DateTimeStyles.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\DaylightTime.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\DigitShapes.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\DivisionRounding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\EastAsianLunisolarCalendar.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\GlobalizationExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)System\Globalization\GlobalizationMode.cs" />

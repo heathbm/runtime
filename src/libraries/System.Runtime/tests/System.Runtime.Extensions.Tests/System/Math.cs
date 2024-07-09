@@ -4,7 +4,6 @@
 using Xunit;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Globalization;
 
 #pragma warning disable xUnit1025 // reporting duplicate test cases due to not distinguishing 0.0 from -0.0
 

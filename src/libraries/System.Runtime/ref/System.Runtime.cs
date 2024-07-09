@@ -944,6 +944,7 @@ namespace System
         public static byte CreateSaturating<TOther>(TOther value) where TOther : System.Numerics.INumberBase<TOther> { throw null; }
         public static byte CreateTruncating<TOther>(TOther value) where TOther : System.Numerics.INumberBase<TOther> { throw null; }
         public static (byte Quotient, byte Remainder) DivRem(byte left, byte right) { throw null; }
+        public static (byte Quotient, byte Remainder) DivRem(byte left, byte right, System.Globalization.DivisionRounding rounding) { throw null; }
         public bool Equals(byte obj) { throw null; }
         public override bool Equals([System.Diagnostics.CodeAnalysis.NotNullWhenAttribute(true)] object? obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -3886,6 +3887,7 @@ namespace System
         public static int CreateSaturating<TOther>(TOther value) where TOther : System.Numerics.INumberBase<TOther> { throw null; }
         public static int CreateTruncating<TOther>(TOther value) where TOther : System.Numerics.INumberBase<TOther> { throw null; }
         public static (int Quotient, int Remainder) DivRem(int left, int right) { throw null; }
+        public static (int Quotient, int Remainder) DivRem(int left, int right, System.Globalization.DivisionRounding rounding) { throw null; }
         public bool Equals(int obj) { throw null; }
         public override bool Equals([System.Diagnostics.CodeAnalysis.NotNullWhenAttribute(true)] object? obj) { throw null; }
         public override int GetHashCode() { throw null; }
@@ -4471,6 +4473,7 @@ namespace System
         public static (byte Quotient, byte Remainder) DivRem(byte left, byte right) { throw null; }
         public static (short Quotient, short Remainder) DivRem(short left, short right) { throw null; }
         public static (int Quotient, int Remainder) DivRem(int left, int right) { throw null; }
+        public static (int Quotient, int Remainder) DivRem(int left, int right, System.Globalization.DivisionRounding rounding) { throw null; }
         public static int DivRem(int a, int b, out int result) { throw null; }
         public static (long Quotient, long Remainder) DivRem(long left, long right) { throw null; }
         public static long DivRem(long a, long b, out long result) { throw null; }
@@ -9313,6 +9316,14 @@ namespace System.Globalization
         None = 1,
         NativeNational = 2,
     }
+    public enum DivisionRounding
+    {
+        Truncate = 0,
+        Floor = 1,
+        Ceiling = 2,
+        AwayFromZero = 3,
+        Euclidean = 4,
+    }
     public abstract partial class EastAsianLunisolarCalendar : System.Globalization.Calendar
     {
         internal EastAsianLunisolarCalendar() { }
@@ -11138,6 +11149,7 @@ namespace System.Numerics
     public partial interface IBinaryInteger<TSelf> : System.IComparable, System.IComparable<TSelf>, System.IEquatable<TSelf>, System.IFormattable, System.IParsable<TSelf>, System.ISpanFormattable, System.ISpanParsable<TSelf>, System.Numerics.IAdditionOperators<TSelf, TSelf, TSelf>, System.Numerics.IAdditiveIdentity<TSelf, TSelf>, System.Numerics.IBinaryNumber<TSelf>, System.Numerics.IBitwiseOperators<TSelf, TSelf, TSelf>, System.Numerics.IComparisonOperators<TSelf, TSelf, bool>, System.Numerics.IDecrementOperators<TSelf>, System.Numerics.IDivisionOperators<TSelf, TSelf, TSelf>, System.Numerics.IEqualityOperators<TSelf, TSelf, bool>, System.Numerics.IIncrementOperators<TSelf>, System.Numerics.IModulusOperators<TSelf, TSelf, TSelf>, System.Numerics.IMultiplicativeIdentity<TSelf, TSelf>, System.Numerics.IMultiplyOperators<TSelf, TSelf, TSelf>, System.Numerics.INumber<TSelf>, System.Numerics.INumberBase<TSelf>, System.Numerics.IShiftOperators<TSelf, int, TSelf>, System.Numerics.ISubtractionOperators<TSelf, TSelf, TSelf>, System.Numerics.IUnaryNegationOperators<TSelf, TSelf>, System.Numerics.IUnaryPlusOperators<TSelf, TSelf> where TSelf : System.Numerics.IBinaryInteger<TSelf>?
     {
         static virtual (TSelf Quotient, TSelf Remainder) DivRem(TSelf left, TSelf right) { throw null; }
+        static (TSelf Quotient, TSelf Remainder) DivRem(TSelf left, TSelf right, System.Globalization.DivisionRounding rounding) { throw null; }
         int GetByteCount();
         int GetShortestBitLength();
         static virtual TSelf LeadingZeroCount(TSelf value) { throw null; }

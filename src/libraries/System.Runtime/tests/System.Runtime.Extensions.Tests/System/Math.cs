@@ -4,6 +4,7 @@
 using Xunit;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Globalization;
 
 #pragma warning disable xUnit1025 // reporting duplicate test cases due to not distinguishing 0.0 from -0.0
 
@@ -1940,36 +1941,91 @@ namespace System.Tests
         }
 
         [Theory]
-        [InlineData(2147483647, 2000, 1073741, 1647)]
-        [InlineData(13952, 2000, 6, 1952)]
-        [InlineData(0, 2000, 0, 0)]
-        [InlineData(-14032, 2000, -7, -32)]
-        [InlineData(-2147483648, 2000, -1073741, -1648)]
-        [InlineData(2147483647, -2000, -1073741, 1647)]
-        [InlineData(13952, -2000, -6, 1952)]
-        [InlineData(13952, 0, 0, 0)]
-        [InlineData(int.MaxValue, 0, 0, 0)]
-        [InlineData(0, 0, 0, 0)]
-        public static void DivRemWithDivisionRoundingInt32(int dividend, int divisor, int expectedQuotient, int expectedRemainder)
+        // Truncate
+        [InlineData(2147483647, 2000, 1073741, 1647, DivisionRounding.Truncate)]
+        [InlineData(13952, 2000, 6, 1952, DivisionRounding.Truncate)]
+        [InlineData(0, 2000, 0, 0, DivisionRounding.Truncate)]
+        [InlineData(-14032, 2000, -7, -32, DivisionRounding.Truncate)]
+        [InlineData(-2147483648, 2000, -1073741, -1648, DivisionRounding.Truncate)]
+        [InlineData(2147483647, -2000, -1073741, 1647, DivisionRounding.Truncate)]
+        [InlineData(13952, -2000, -6, 1952, DivisionRounding.Truncate)]
+        [InlineData(13952, 0, 0, 0, DivisionRounding.Truncate)]
+        [InlineData(int.MaxValue, int.MaxValue, 1, 0, DivisionRounding.Truncate)]
+        [InlineData(int.MaxValue, 1, int.MaxValue, 0, DivisionRounding.Truncate)]
+        [InlineData(int.MaxValue, 0, 0, 0, DivisionRounding.Truncate)]
+        [InlineData(1, int.MaxValue, 0, 1, DivisionRounding.Truncate)]
+        [InlineData(0, 0, 0, 0, DivisionRounding.Truncate)]
+        // Floor Tests
+        [InlineData(2147483647, 2000, 1073741, 1647, DivisionRounding.Floor)]
+        [InlineData(13952, 2000, 6, 1952, DivisionRounding.Floor)]
+        [InlineData(0, 2000, 0, 0, DivisionRounding.Floor)]
+        [InlineData(-14032, 2000, -8, 1968, DivisionRounding.Floor)]
+        [InlineData(-2147483648, 2000, -1073742, 352, DivisionRounding.Floor)]
+        [InlineData(2147483647, -2000, -1073742, -353, DivisionRounding.Floor)]
+        [InlineData(13952, -2000, -7, -48, DivisionRounding.Floor)]
+        [InlineData(13952, 0, 0, 0, DivisionRounding.Floor)]
+        [InlineData(int.MaxValue, 0, 0, 0, DivisionRounding.Floor)]
+        [InlineData(int.MaxValue, 1, int.MaxValue, 0, DivisionRounding.Floor)]
+        [InlineData(int.MaxValue, int.MaxValue, 1, 0, DivisionRounding.Floor)]
+        [InlineData(1, int.MaxValue, 0, 1, DivisionRounding.Floor)]
+        [InlineData(0, 0, 0, 0, DivisionRounding.Floor)]
+        // Ceiling Tests
+        [InlineData(2147483647, 2000, 1073742, -353, DivisionRounding.Ceiling)]
+        [InlineData(13952, 2000, 7, -48, DivisionRounding.Ceiling)]
+        [InlineData(0, 2000, 0, 0, DivisionRounding.Ceiling)]
+        [InlineData(-14032, 2000, -7, -32, DivisionRounding.Ceiling)]
+        [InlineData(-2147483648, 2000, -1073741, -1648, DivisionRounding.Ceiling)]
+        [InlineData(2147483647, -2000, -1073741, 1647, DivisionRounding.Ceiling)]
+        [InlineData(13952, -2000, -6, 1952, DivisionRounding.Ceiling)]
+        [InlineData(13952, 0, 0, 0, DivisionRounding.Ceiling)]
+        [InlineData(int.MaxValue, 0, 0, 0, DivisionRounding.Ceiling)]
+        [InlineData(int.MaxValue, 1, int.MaxValue, 0, DivisionRounding.Ceiling)]
+        [InlineData(int.MaxValue, int.MaxValue, 1, 0, DivisionRounding.Ceiling)]
+        [InlineData(1, int.MaxValue, 1, -2147483646, DivisionRounding.Ceiling)]
+        [InlineData(0, 0, 0, 0, DivisionRounding.Ceiling)]
+        // AwayFromZero Tests
+        [InlineData(2147483647, 2000, 1073742, -353, DivisionRounding.AwayFromZero)]
+        [InlineData(13952, 2000, 7, -48, DivisionRounding.AwayFromZero)]
+        [InlineData(0, 2000, 0, 0, DivisionRounding.AwayFromZero)]
+        [InlineData(-14032, 2000, -8, 1968, DivisionRounding.AwayFromZero)]
+        [InlineData(-2147483648, 2000, -1073742, 352, DivisionRounding.AwayFromZero)]
+        [InlineData(2147483647, -2000, -1073742, -353, DivisionRounding.AwayFromZero)]
+        [InlineData(13952, -2000, -7, -48, DivisionRounding.AwayFromZero)]
+        [InlineData(13952, 0, 0, 0, DivisionRounding.AwayFromZero)]
+        [InlineData(int.MaxValue, 0, 0, 0, DivisionRounding.AwayFromZero)]
+        [InlineData(int.MaxValue, 1, int.MaxValue, 0, DivisionRounding.AwayFromZero)]
+        [InlineData(int.MaxValue, int.MaxValue, 1, 0, DivisionRounding.AwayFromZero)]
+        [InlineData(1, int.MaxValue, 1, -2147483646, DivisionRounding.AwayFromZero)]
+        [InlineData(0, 0, 0, 0, DivisionRounding.AwayFromZero)]
+        // Euclidean Tests
+        [InlineData(2147483647, 2000, 1073741, 1647, DivisionRounding.Euclidean)]
+        [InlineData(13952, 2000, 6, 1952, DivisionRounding.Euclidean)]
+        [InlineData(0, 2000, 0, 0, DivisionRounding.Euclidean)]
+        [InlineData(-14032, 2000, -8, 1968, DivisionRounding.Euclidean)]
+        [InlineData(-2147483648, 2000, -1073742, 352, DivisionRounding.Euclidean)]
+        [InlineData(2147483647, -2000, -1073741, 1647, DivisionRounding.Euclidean)]
+        [InlineData(13952, -2000, -6, 1952, DivisionRounding.Euclidean)]
+        [InlineData(13952, 0, 0, 0, DivisionRounding.Euclidean)]
+        [InlineData(int.MaxValue, 0, 0, 0, DivisionRounding.Euclidean)]
+        [InlineData(int.MaxValue, 1, int.MaxValue, 0, DivisionRounding.Euclidean)]
+        [InlineData(int.MaxValue, int.MaxValue, 1, 0, DivisionRounding.Euclidean)]
+        [InlineData(1, int.MaxValue, 0, 1, DivisionRounding.Euclidean)]
+        [InlineData(0, 0, 0, 0, DivisionRounding.Euclidean)]
+        public static void DivRemWithRoundingInt32(int dividend, int divisor, int expectedQuotient, int expectedRemainder, DivisionRounding divisionRounding)
         {
             if (divisor == 0)
             {
-                Assert.Throws<DivideByZeroException>(() => Math.DivRem(dividend, divisor, Globalization.DivisionRounding.Truncate));
-                Assert.Throws<DivideByZeroException>(() => Math.DivRem(dividend, divisor, Globalization.DivisionRounding.Truncate));
+                Assert.Throws<DivideByZeroException>(() => Math.DivRem(dividend, divisor, divisionRounding));
             }
             else
             {
-                (int Quotient, int Remainder) value = Math.DivRem(dividend, divisor, Globalization.DivisionRounding.Truncate);
-                Assert.Equal(expectedQuotient, value.Quotient);
-                Assert.Equal(expectedRemainder, value.Remainder);
-
-                var (actualQuotient, actualRemainder) = Math.DivRem(dividend, divisor, Globalization.DivisionRounding.Truncate);
+                var (actualQuotient, actualRemainder) = Math.DivRem(dividend, divisor, divisionRounding);
                 Assert.Equal(expectedQuotient, actualQuotient);
                 Assert.Equal(expectedRemainder, actualRemainder);
             }
             if (IntPtr.Size == 4)
             {
-                DivRemNativeInt(dividend, divisor, expectedQuotient, expectedRemainder);
+                // DivRemWithRoundingNativeInt(dividend, divisor, expectedQuotient, expectedRemainder, divisionRounding);
             }
         }
 
@@ -2083,6 +2139,25 @@ namespace System.Tests
                 Assert.Equal(expectedRemainder, actualRemainder);
             }
         }
+
+        /*
+         * Not yet implemented
+         * 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void DivRemWithRoundingNativeInt(nint dividend, nint divisor, nint expectedQuotient, nint expectedRemainder, DivisionRounding divisionRounding)
+        {
+            if (divisor == 0)
+            {
+                Assert.Throws<DivideByZeroException>(() => Math.DivRem(dividend, divisor, divisionRounding));
+            }
+            else
+            {
+                var (actualQuotient, actualRemainder) = Math.DivRem(dividend, divisor, divisionRounding);
+                Assert.Equal(expectedQuotient, actualQuotient);
+                Assert.Equal(expectedRemainder, actualRemainder);
+            }
+        }
+        */
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void DivRemNativeUInt(nuint dividend, nuint divisor, nuint expectedQuotient, nuint expectedRemainder)
